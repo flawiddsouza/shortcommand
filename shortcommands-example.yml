@@ -1,0 +1,38 @@
+shortcommands:
+  - name: Test
+    commands:
+      - name: test
+        description: This will fail midway through the do sequence
+        do:
+          - ls ~
+          - rm ~/test-acat.txt
+          - ls ~
+      - name: test2
+        description: This will not fail and will execute all steps correctly
+        do:
+          - ls ~
+          - echo "Test" > ~/test-cat.txt
+          - ls ~
+          - cat ~/test-cat.txt
+          - rm ~/test-cat.txt
+          - ls ~
+      - name: test3
+        description: This will create a test file in the current directory and then remove it
+        cwd: .
+        do:
+          - ls
+          - echo "Test" > test-cat.txt
+          - ls
+          - cat test-cat.txt
+          - rm test-cat.txt
+          - ls
+      - name: test4
+        description: This will create a test file in the home directory of the user and then remove it
+        cwd: "~"
+        do:
+          - ls
+          - echo "Test" > test-cat.txt
+          - ls
+          - cat test-cat.txt
+          - rm test-cat.txt
+          - ls
