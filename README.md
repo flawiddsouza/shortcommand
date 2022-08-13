@@ -19,9 +19,9 @@ goreleaser release --rm-dist
 
 ## Installing on Linux (tested on Ubuntu)
 ```bash
-wget https://github.com/flawiddsouza/shortcommand/releases/download/v0.0.1/shortcommand_0.0.1_Linux_x86_64.tar.gz
-tar -xf shortcommand_0.0.1_Linux_x86_64.tar.gz
+wget https://github.com/flawiddsouza/shortcommand/releases/download/v0.0.2/shortcommand_0.0.2_Linux_x86_64.tar.gz
+tar -xf shortcommand_0.0.2_Linux_x86_64.tar.gz
 mv shortcommand ~/.local/bin
-rm shortcommand_0.0.1_Linux_x86_64.tar.gz
+rm shortcommand_0.0.2_Linux_x86_64.tar.gz
 ```
 You should then be able to use the `shortcommand` command anywhere you are.

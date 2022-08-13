@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -40,11 +40,12 @@ func fileExists(path string) bool {
 	return false
 }
 
-func executeCommand(commandToRun string, currentWorkingDirectory string) error {
-	colorReset := "\033[0m"
-	colorRed := "\033[31m"
-	colorGreen := "\033[32m"
+var ConsoleColors = map[string]string{
+	"Reset": "\033[0m",
+	"Red":   "\033[31m",
+}
 
+func executeCommand(commandToRun string, currentWorkingDirectory string) error {
 	cmd := exec.Command("sh", "-c", commandToRun)
 	if currentWorkingDirectory != "" {
 		currentWorkingDirectoryResolved := os.ExpandEnv(currentWorkingDirectory)
@@ -53,28 +54,16 @@ func executeCommand(commandToRun string, currentWorkingDirectory string) error {
 			currentWorkingDirectoryResolved = home + currentWorkingDirectoryResolved[1:]
 		}
 		if !fileExists(currentWorkingDirectoryResolved) {
-			fmt.Printf("%sUnable to find given working directory: %s%s\n", colorRed, currentWorkingDirectory, colorReset)
+			fmt.Printf("%sUnable to find given working directory: %s%s\n", ConsoleColors["Red"], currentWorkingDirectory, ConsoleColors["Reset"])
 		}
 		cmd.Dir = currentWorkingDirectoryResolved
 	}
 
-	cmdReader, _ := cmd.StdoutPipe()
+	stdout := io.Writer(os.Stdout)
+	stderr := io.Writer(os.Stderr)
 
-	scanner := bufio.NewScanner(cmdReader)
-	go func() {
-		for scanner.Scan() {
-			fmt.Printf("%s--> %s\n%s", colorGreen, scanner.Text(), colorReset)
-		}
-	}()
-
-	cmdReader2, _ := cmd.StderrPipe()
-
-	scanner2 := bufio.NewScanner(cmdReader2)
-	go func() {
-		for scanner2.Scan() {
-			fmt.Printf("%s--> %s\n%s", colorRed, scanner2.Text(), colorReset)
-		}
-	}()
+	cmd.Stderr = stderr
+	cmd.Stdout = stdout
 
 	cmd.Start()
 
@@ -119,7 +108,7 @@ func main() {
 						err = executeCommand(commandToRun, command.CurrentWorkingDirectory)
 						if err != nil {
 							if i < len(command.Do)-1 {
-								fmt.Println("Not continuing with the next command in do sequence as previous command errored out")
+								fmt.Printf("%sNot continuing with the next command in do sequence as previous command errored out%s\n", ConsoleColors["Red"], ConsoleColors["Reset"])
 								return
 							}
 						}
