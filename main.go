@@ -85,16 +85,35 @@ func main() {
 		return
 	}
 
-	if len(os.Args) < 3 {
-		fmt.Println("Two arguments need to passed to the command, first is your shortcommand and then the command under it")
-		return
-	}
-
 	var parsedConfig Config
 
 	err = yaml.Unmarshal(yamlFile, &parsedConfig)
 	if err != nil {
 		fmt.Println("Invalid config file given")
+		return
+	}
+
+	if len(os.Args) < 2 {
+		fmt.Println("Available commands")
+		for _, shortCommand := range parsedConfig.ShortCommands {
+			fmt.Printf("%s\n", shortCommand.Name)
+			for _, command := range shortCommand.Commands {
+				fmt.Printf("%s%s%s%s\n", "  ", command.Name, "\t", command.Description)
+			}
+		}
+		return
+	}
+
+	if len(os.Args) < 3 {
+		for _, shortCommand := range parsedConfig.ShortCommands {
+			if shortCommand.Name == os.Args[1] {
+				fmt.Printf("Available sub commands for %s\n", os.Args[1])
+				for _, command := range shortCommand.Commands {
+					fmt.Printf("%s%s%s\n", command.Name, "\t", command.Description)
+				}
+				break
+			}
+		}
 		return
 	}
 
