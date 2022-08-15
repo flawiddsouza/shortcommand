@@ -5,7 +5,7 @@ Easily run a set of commands quickly using a yaml configuration file
 ## Usage
 
 Create a yaml file named shortcommand.yml or anything you want. Here's an example:
-```
+```yaml
 shortcommands:
   - name: Journals
     commands:
@@ -40,15 +40,28 @@ shortcommands:
 ```
 
 Then add this in your ~/.bashrc or ~/.zshrc:
-```
+```bash
 export SHORTCOMMAND_CONFIG=/path/to/shortcommand.yml
 ```
 
-Now you'll be able to use the above defined short commands to run those sets of commands wherever you are using just this:
+Now if you run `shortcommand` without any arguments, you'll see this:
+```bash
+Available commands
+Journals
+  ui    Pull, build and deploy Web-UI
+  api   Pull, build and deploy API
+QuickNote
+  api   Pull, build and deploy API
+  restart-api   Restart API in pm2
+```
+Works as a readme for your command sets in case you forget what options are available for you to use.
+
+Now the above defined short commands will be accessible and can be used by running:
 ```bash
 shortcommand Journals ui
 shortcommand Journals api
 shortcommand QuickNote api
+shortcommand QuickNote restart-api
 ```
 
 Note: Commands mentioned under `do:` will execute in sequence and will not continue to the next one if the one that's running fails.
